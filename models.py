@@ -1,9 +1,9 @@
-from pydantic import BaseModel,Field
+from pydantic import BaseModel,Field,ConfigDict,field_validator
 from decimal import Decimal
-import datetime
+from datetime import datetime
 from enum import Enum
 
-class product(BaseModel):
+class Product(BaseModel):
     id:int
     sku:str
     name:str
@@ -29,5 +29,24 @@ class OrderItem(BaseModel):
     quantity: int = Field(gt=0)
     unit_price: Decimal
     line_total: Decimal
+
+class ProductCreate(BaseModel):
+    sku: str = Field(min_length=1)
+    name: str = Field(min_length=1)
+    price: Decimal = Field(gt=0, decimal_places=2)
+    stock_qty: int = Field(ge=0)
+    is_active: bool = True
+
+class ProductUpdate(BaseModel):
+    model_config = {"extra": "forbid"}
+
+    name: str | None = Field(default=None, min_length=1)
+    price: Decimal | None = Field(default=None, gt=0, decimal_places=2)
+    is_active: bool | None = None
+
+class StockAdjustment(BaseModel):
+    delta: int
+    reason: str = Field(min_length=1)    
+
 
 
