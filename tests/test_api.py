@@ -13,10 +13,12 @@ def client(tmp_path, monkeypatch):
     schema = Path(database.__file__).with_name("schema.sql").read_text(encoding="utf-8")
     monkeypatch.setattr(database, "DB_PATH", tmp_path / "syspos.db")
 
+    monkeypatch.setenv("SYSPOS_API_KEY", "test-only-key")
+
     with closing(database.connect_db()) as db:
         db.executescript(schema)
 
-    with TestClient(app) as test_client:
+    with TestClient(app, headers={"X-API-Key": "test-only-key"}) as test_client:
         yield test_client
 
 
