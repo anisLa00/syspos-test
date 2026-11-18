@@ -1,0 +1,8 @@
+.git/
+.venv/
+.vscode/
+.pytest_cache/
+**/__pycache__/
+.env
+.env.*
+syspos.db*
