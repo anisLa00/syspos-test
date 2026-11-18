@@ -2,6 +2,7 @@ from pydantic import BaseModel,Field,ConfigDict,field_validator
 from decimal import Decimal
 from datetime import datetime
 from enum import Enum
+from datetime import date as CalendarDate
 
 class Product(BaseModel):
     id:int
@@ -49,4 +50,27 @@ class StockAdjustment(BaseModel):
     reason: str = Field(min_length=1)    
 
 
+class OrderItemCreate(BaseModel):
+    product_id: int = Field(gt=0)
+    quantity: int = Field(gt=0)
 
+
+class OrderCreate(BaseModel):
+    items: list[OrderItemCreate] = Field(min_length=1)
+
+class OrderResponse(Order):
+    items: list[OrderItem]
+
+
+class TopSellingProduct(BaseModel):
+    product_id: int
+    sku: str
+    name: str
+    quantity_sold: int
+
+
+class DailySalesReport(BaseModel):
+    date: CalendarDate
+    order_count: int
+    total_revenue: Decimal
+    top_products: list[TopSellingProduct]        
