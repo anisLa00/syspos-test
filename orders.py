@@ -1,10 +1,8 @@
 from contextlib import closing
 from decimal import Decimal
 
-from fastapi import APIRouter
-from fastapi.responses import JSONResponse
-
 from fastapi import APIRouter, Path
+from fastapi.responses import JSONResponse
 
 from database import connect_db
 from models import OrderCreate, OrderItem, OrderResponse
@@ -163,7 +161,9 @@ def cancel_order(order_id: int = Path(ge=1, le=SQLITE_MAX_INT)):
         if order_row is None:
             return order_error(404, "order_not_found", "Order not found")
         if order_row[0] == "CANCELLED":
-            return order_error(409, "order_already_cancelled", "Order already cancelled")
+            return order_error(
+                409, "order_already_cancelled", "Order already cancelled"
+            )
 
         items = db.execute(
             "SELECT product_id, quantity FROM order_items WHERE order_id = ?",

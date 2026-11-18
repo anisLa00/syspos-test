@@ -1,12 +1,14 @@
-from fastapi import APIRouter, Path
-from models import Product, ProductCreate, ProductUpdate,StockAdjustment
-from fastapi import APIRouter
 from contextlib import closing
-from database import connect_db
-from fastapi.responses import JSONResponse
 from decimal import Decimal
 
+from fastapi import APIRouter, Path
+from fastapi.responses import JSONResponse
+
+from database import connect_db
+from models import Product, ProductCreate, ProductUpdate, StockAdjustment
+
 router = APIRouter()
+
 
 @router.post("/products", response_model=Product, status_code=201)
 def create_product(product: ProductCreate):
@@ -31,9 +33,9 @@ def create_product(product: ProductCreate):
 
     if row is None:
         return JSONResponse(
-        status_code=409,
-        content={"error": "duplicate_sku", "message": "SKU already exists"},
-    )
+            status_code=409,
+            content={"error": "duplicate_sku", "message": "SKU already exists"},
+        )
 
     product_id, created_at = row
 
@@ -46,6 +48,7 @@ def create_product(product: ProductCreate):
         is_active=product.is_active,
         created_at=created_at,
     )
+
 
 @router.get("/products", response_model=list[Product])
 def list_products():
@@ -102,7 +105,8 @@ def get_product(product_id: int = Path(ge=1, le=2**63 - 1)):
         is_active=bool(is_active),
         created_at=created_at,
     )
-    
+
+
 @router.patch("/products/{product_id}", response_model=Product)
 def update_product(
     update: ProductUpdate,
@@ -112,7 +116,10 @@ def update_product(
     if None in changes.values():
         return JSONResponse(
             status_code=422,
-            content={"error": "null_field", "message": "Send a value or omit the field"},
+            content={
+                "error": "null_field",
+                "message": "Send a value or omit the field",
+            },
         )
 
     price = update.price
@@ -155,7 +162,8 @@ def update_product(
         stock_qty=stock_qty,
         is_active=bool(is_active),
         created_at=created_at,
-    )   
+    )
+
 
 @router.post("/products/{product_id}/stock-adjustments", response_model=Product)
 def adjust_stock(
@@ -203,11 +211,4 @@ def adjust_stock(
         stock_qty=new_stock,
         is_active=bool(is_active),
         created_at=created_at,
-    )     
-        
-
-
-
-
-
-
+    )

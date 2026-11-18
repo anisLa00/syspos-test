@@ -1,7 +1,7 @@
-import sqlite3
-from pathlib import Path
-from contextlib import closing
 import os
+import sqlite3
+from contextlib import closing
+from pathlib import Path
 
 PROJECT_DIR = Path(__file__).resolve().parent
 DB_PATH = Path(os.getenv("SYSPOS_DB_PATH", str(PROJECT_DIR / "syspos.db")))
@@ -12,6 +12,7 @@ def connect_db() -> sqlite3.Connection:
     connection = sqlite3.connect(DB_PATH)
     connection.execute("PRAGMA foreign_keys = ON")
     return connection
+
 
 def init_db() -> None:
     schema = SCHEMA_PATH.read_text(encoding="utf-8")

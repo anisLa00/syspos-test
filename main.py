@@ -1,10 +1,11 @@
-from fastapi import FastAPI,Depends
-from products import router as products_router
-from orders import router as orders_router
-from reports import router as reports_router
-from auth import APIKeyError, api_key_error_response, require_api_key
+from fastapi import Depends, FastAPI
 
-app= FastAPI(title="SysPOS Mini POS Orders API")
+from auth import APIKeyError, api_key_error_response, require_api_key
+from orders import router as orders_router
+from products import router as products_router
+from reports import router as reports_router
+
+app = FastAPI(title="SysPOS Mini POS Orders API")
 
 
 app.add_exception_handler(APIKeyError, api_key_error_response)

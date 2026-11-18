@@ -40,6 +40,7 @@ def test_create_order_reduces_stock(client):
     assert product.status_code == 200, product.text
     assert product.json()["stock_qty"] == 8
 
+
 def add_test_product(client, sku, stock_qty):
     response = client.post(
         "/products",
@@ -69,7 +70,8 @@ def test_insufficient_stock_rejects_whole_order(client):
     assert client.get(f"/products/{second_id}").json()["stock_qty"] == 1
 
     with closing(database.connect_db()) as db:
-        assert db.execute("SELECT COUNT(*) FROM orders").fetchone()[0] == 0    
+        assert db.execute("SELECT COUNT(*) FROM orders").fetchone()[0] == 0
+
 
 def test_cancel_order_restores_stock(client):
     product_id = add_test_product(client, "TEST-CANCEL", 10)
@@ -109,7 +111,8 @@ def test_cancel_order_twice_does_not_restore_stock_twice(client):
 
     product = client.get(f"/products/{product_id}")
     assert product.status_code == 200, product.text
-    assert product.json()["stock_qty"] == 10  
+    assert product.json()["stock_qty"] == 10
+
 
 def test_duplicate_sku_is_rejected(client):
     sku = "TEST-DUPLICATE"
@@ -127,7 +130,8 @@ def test_duplicate_sku_is_rejected(client):
 
     after = client.get(f"/products/{product_id}")
     assert after.status_code == 200, after.text
-    assert after.json() == before.json()   
+    assert after.json() == before.json()
+
 
 def test_daily_report_excludes_cancelled_orders(client):
     water = add_test_product(client, "REPORT-WATER", 10)
@@ -137,12 +141,14 @@ def test_daily_report_excludes_cancelled_orders(client):
 
     paid = client.post(
         "/orders",
-        json={"items": [
-            {"product_id": water, "quantity": 4},
-            {"product_id": cola, "quantity": 3},
-            {"product_id": tea, "quantity": 2},
-            {"product_id": juice, "quantity": 1},
-        ]},
+        json={
+            "items": [
+                {"product_id": water, "quantity": 4},
+                {"product_id": cola, "quantity": 3},
+                {"product_id": tea, "quantity": 2},
+                {"product_id": juice, "quantity": 1},
+            ]
+        },
     )
     assert paid.status_code == 201, paid.text
 
