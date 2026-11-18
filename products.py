@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Path, Query
+from fastapi import APIRouter, Path
 from models import Product, ProductCreate, ProductUpdate,StockAdjustment
 from fastapi import APIRouter
 from contextlib import closing
