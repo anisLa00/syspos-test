@@ -87,4 +87,4 @@ Open [Swagger UI for Docker](http://127.0.0.1:8001/docs) and authorize with the 
 
 - Add a pending payment state. Mark an order as paid once payment is confirmed.
 - Track preparation separately from payment. When a customer cancels, restore only items that can still be sold and record prepared or damaged items as waste.
-
+- Add idempotency to order creation. If the client retries with the same `Idempotency-Key`, return the existing order so the sale is recorded and stock is deducted only once.
